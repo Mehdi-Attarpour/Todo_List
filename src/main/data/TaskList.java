@@ -19,7 +19,7 @@ public class TaskList extends ArrayList<Task> {
      * @param taskTitle Task's title which will be removed
      */
     public void removeTask(String taskTitle){
-        this.removeIf(x -> x.getTitle().equals(taskTitle));
+        this.removeIf(x -> x.getTitle().equalsIgnoreCase(taskTitle));
     }
 
     /**
@@ -52,7 +52,7 @@ public class TaskList extends ArrayList<Task> {
     public ArrayList<Task> taskByProject(String projectName) {
         return (ArrayList<Task>)
                 this.stream()
-                        .filter(x -> x.getProject().getTitle().equals(projectName))
+                        .filter(x -> x.getProject().getTitle().equalsIgnoreCase(projectName))
                         .collect(Collectors.toList());
     }
 
@@ -61,10 +61,10 @@ public class TaskList extends ArrayList<Task> {
      * @param dueDate The due date.
      * @return An ArrayList of all tasks with due date equals to given date.
      */
-    public ArrayList<Task> taskByDueDate(String dueDate) {
+    public ArrayList<Task> taskByDueDate(LocalDate dueDate) {
         return (ArrayList<Task>)
                 this.stream()
-                        .filter(x -> x.getDueDate().equals(LocalDate.parse(dueDate)))
+                        .filter(x -> x.getDueDate().equals(dueDate))
                         .collect(Collectors.toList());
     }
 
@@ -99,6 +99,26 @@ public class TaskList extends ArrayList<Task> {
         return
                 this.stream()
                         .collect(Collectors.groupingBy(Task::getProject));
+    }
+
+    /**
+     * Provide a summery of all tasks and their status.
+     * @return A string showing number of 'Done' and 'Not-Done' tasks.
+     */
+
+    public String summary() {
+        long numberOfToDoTask =
+                this.stream()
+                        .filter(x -> x.getStatus() == Status.Not_Done)
+                        .count();
+
+        long numberOfDoneTask =
+                this.stream()
+                        .filter(x -> x.getStatus() == Status.Done)
+                        .count();
+
+        return String.format(">> You have %d Tasks todo and %d Tasks are done.", numberOfToDoTask, numberOfDoneTask);
+
     }
 
 }
