@@ -21,9 +21,9 @@ public class Task {
      * @param dueDate The task's due date.
      * @param project The task's project
      */
-    public Task(String title, String dueDate, Project project) {
+    public Task(String title, LocalDate dueDate, Project project) {
         this.title = title;
-        this.dueDate = LocalDate.parse(dueDate);
+        this.dueDate = dueDate;
         this.status = Status.Not_Done;
         this.project = project;
     }
@@ -64,5 +64,19 @@ public class Task {
     public String toString() {
         return String.format("%-20s* Task: %-15s  Due Date: %-14s Status: %-14s Project: %s",
                 "",title, dueDate , status , project.getTitle());
+    }
+
+    /**
+     * Check if two tasks are equal.
+     * @param otherTask The other task to check
+     * @return True if tasks are ewual.
+     * @see Project for projects equality conditions.
+     */
+    @Override
+    public boolean equals(Object otherTask){
+        if (!(otherTask instanceof Task))
+            return false;
+        Task t = (Task) otherTask;
+        return t.title.equalsIgnoreCase(this.title) && t.dueDate.equals(this.dueDate) && t.project.equals(this.project);
     }
 }
