@@ -1,19 +1,20 @@
 package main.ui;
 
 import main.data.Project;
+import main.data.Status;
 import main.data.Task;
 import main.data.TaskList;
 import main.print.Print;
 
 import java.time.LocalDate;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 public class UI {
 
     private TaskList list;
     private Option opt;
-    private static Scanner input = new Scanner(System.in).useDelimiter("\n");
 
     /**
      * Constructor for UI.
@@ -31,19 +32,19 @@ public class UI {
     public void welcome() {
         System.out.println("\n>> Welcome to TODO-List APP");
         System.out.println(list.summary() + "\n");
-        this.firsCommand();
+        this.firstCommand();
     }
 
     /**
      * Show first menu options
      * and invoke right method regarding user's choice
      */
-    public void firsCommand() {
+    public void firstCommand() {
         switch (opt.firstOptions()) {
 
-            case 1: runShowTaskCommand(); break;
+            case 1 : runShowTaskCommand(); break;
             case 2 : runAddTaskCommand(); break;
-//            case 3 : runEditCommand(); break;
+            case 3 : runEditCommand(); break;
 //            case 4 : runLoadCommand(); break;
 //            case 5 : runSaveCommand(); break;
             case 6 : runQuitCommand(); break;
@@ -73,8 +74,7 @@ public class UI {
                 break;
             }
             case 4: {
-                getProjectNameCommand();
-                Print.printList(this.list.taskByProject(input.next()));
+                Print.printList(this.list.taskByProject(getProjectNameCommand()));
                 this.runShowTaskCommand();
                 break;
             }
@@ -84,7 +84,7 @@ public class UI {
                 break;
             }
             case 6: {
-                this.firsCommand();
+                this.firstCommand();
             }
         }
     }
@@ -94,26 +94,54 @@ public class UI {
      */
     private void runAddTaskCommand() {
         System.out.println("Please insert the Title: ");
-        String title = input.next();
+        String title = opt.stringValidator();
         System.out.println("Please insert the due date: ");
         LocalDate dueDate = opt.dateValidator();
         System.out.println("Please insert the project name");
-        Project project = new Project(input.next());
-        if(this.list.addTask(title, dueDate, project)){
-            System.out.println("Task added successfully!!!");
-            System.out.println("\n\t\tNote\n\t\tThe Task status is set as 'Not_Done'.\n\t\tIf you want to change it please choose edit option.\n");
-            this.firsCommand();
+        Project project = new Project(opt.stringValidator());
+        if(this.list.addTask(title, dueDate, project, Status.Not_Done)){
+            this.firstCommand();
         } else {
-            System.out.println("\nYou already added the same task. Please add NEW task.\n");
             this.runAddTaskCommand();
         }
     }
 
     /**
+     * Edit and update task if it won't be a duplicate task.
+     */
+    public void runEditCommand(){
+        Task taskToEdit = this.getOneTaskToEdit();
+        switch (opt.showEditTaskOption()){
+            case 1 : this.editTitle(taskToEdit);
+            case 2 : this.editDueDate(taskToEdit);
+            case 3 : this.editProject(taskToEdit);
+            case 4 : this.editStatus(taskToEdit);
+        }
+    }
+
+    public ArrayList<Task> getTasksArrayToEdit(){
+        System.out.println("Which Task do you want to edit? Please insert the title.");
+        String taskTitleToEdit = opt.stringValidator();
+        return (ArrayList<Task>)
+                this.list.stream()
+                .filter(x -> x.getTitle().equalsIgnoreCase(taskTitleToEdit))
+                .collect(Collectors.toList());
+    }
+
+    public Task getOneTaskToEdit(){
+        ArrayList<Task> taskArrayToEdit = this.getTasksArrayToEdit();
+        Print.printList(taskArrayToEdit);
+        System.out.println("Please confirm which task do you want to edit (Enter the number of task)");
+        int id = opt.integerValidator(1, taskArrayToEdit.size());
+        return taskArrayToEdit.get(id - 1);
+    }
+
+    /**
      * Ask Which project from user.
      */
-    public void getProjectNameCommand() {
+    public String getProjectNameCommand() {
         System.out.println("Which project?");
+        return opt.stringValidator();
     }
 
     /**
@@ -123,6 +151,110 @@ public class UI {
     public LocalDate getDueDate() {
         System.out.println("Which date?");
         return opt.dateValidator();
+    }
+
+    /**
+     * Get valid task title.
+     * @return The valid task title.
+     */
+    public String getNewTaskTitle(){
+        System.out.println("Please enter new title to update the task:");
+        return opt.stringValidator();
+    }
+
+    /**
+     * Update task's title.
+     * @param taskToEdit Task to be updated.
+     */
+    public void editTitle(Task taskToEdit){
+        String title = getNewTaskTitle();
+        LocalDate dueDate = taskToEdit.getDueDate();
+        Project project = taskToEdit.getProject();
+        Status status = taskToEdit.getStatus();
+        updateTask(taskToEdit, title, dueDate, project, status);
+    }
+
+    /**
+     * Get valid date.
+     * @return The valid date.
+     */
+    private LocalDate getNewDueDate() {
+        System.out.println("Please enter new due date to update the task");
+        return opt.dateValidator();
+    }
+
+    /**
+     * Update task's due date.
+     * @param taskToEdit Task to be updated.
+     */
+    public void editDueDate(Task taskToEdit){
+        LocalDate dueDate = getNewDueDate();
+        String title = taskToEdit.getTitle();
+        Project project = taskToEdit.getProject();
+        Status status = taskToEdit.getStatus();
+        updateTask(taskToEdit, title, dueDate, project, status);
+    }
+
+    /**
+     * Get valid project title.
+     * @return The valid project's title.
+     */
+    private Project getNewProject() {
+        System.out.println("Please enter new project to update the task");
+        Project newProject = new Project(opt.stringValidator());
+        return newProject;
+    }
+
+    /**
+     * Update task's project.
+     * @param taskToEdit Task to be updated.
+     */
+    public void editProject(Task taskToEdit){
+        Project project = getNewProject();
+        String title = taskToEdit.getTitle();
+        LocalDate dueDate = taskToEdit.getDueDate();
+        Status status = taskToEdit.getStatus();
+        updateTask(taskToEdit, title, dueDate, project, status);
+    }
+
+    /**
+     * Get new valid status.
+     * @return The valid Status.
+     */
+    private Status getNewStatus() {
+        System.out.println("Please enter new Status to update the task");
+        return opt.statusValidator();
+    }
+
+    /**
+     * Update task's status.
+     * @param taskToEdit Task to be updated.
+     */
+    public void editStatus(Task taskToEdit){
+        String title = taskToEdit.getTitle();
+        LocalDate dueDate = taskToEdit.getDueDate();
+        Project project = taskToEdit.getProject();
+        Status status = getNewStatus();
+        updateTask(taskToEdit, title, dueDate, project, status);
+    }
+
+    /**
+     * Update Task if there won't be duplicate task
+     * if the task can be updated with new fields it remove the task and create a new
+     * task with updated values.
+     * @param task Task to be updated.
+     * @param title New title.
+     * @param dueDate New due date.
+     * @param project New project.
+     * @param status New status.
+     */
+    public void updateTask(Task task,String title, LocalDate dueDate, Project project, Status status){
+        if(list.addTask(title, dueDate, project, status)){
+            list.remove(task);
+            firstCommand();
+        } else {
+            firstCommand();
+        }
     }
 
     /**

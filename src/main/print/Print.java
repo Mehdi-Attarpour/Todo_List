@@ -22,12 +22,12 @@ public final class Print {
     public static void printList(ArrayList<Task> list){
         if(list != null && list.size() != 0 ){
             for(Task task: list){
-                System.out.println(task);
+                System.out.println("\t\t(" + Integer.toString(list.indexOf(task) + 1) + ")" + task);
             }
         } else {
-            System.out.println("----------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
             System.out.println("There is NOTHING to show!!!!");
-            System.out.println("----------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
         }
     }
 
@@ -51,9 +51,9 @@ public final class Print {
                 System.out.println("---------------------------------------------------------------------------------------------------------------");
             }
         } else {
-            System.out.println("----------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
             System.out.println("There is NOTHING to show!!!!");
-            System.out.println("----------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
         }
     }
 }

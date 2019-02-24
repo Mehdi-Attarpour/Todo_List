@@ -1,5 +1,7 @@
 package main.ui;
 
+import main.data.Status;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -27,23 +29,37 @@ public class Option {
 
     /**
      * Show the menu for display tasks.
-     * @return the valid option number.
+     * @return The valid option number.
      */
     public int showTaskOptions(){
-        System.out.println("----------------------------------------------------------");
+        System.out.println("\n===============================================================================================================");
         System.out.println( ">>> How do you want to see the Tasks:\n" +
-                "\t>>> (1) Show all Tasks sorted by title \n" +
-                "\t>>> (2) Show all Tasks sorted by due date \n" +
-                "\t>>> (3) Show all Tasks grouped by project \n" +
-                "\t>>> (4) Show Task List of a certain project\n" +
-                "\t>>> (5) Show Task List with certain due date\n" +
-                "\t>>> (6) Back");
+                          "\t>>> (1) Show all Tasks sorted by title \n" +
+                          "\t>>> (2) Show all Tasks sorted by due date \n" +
+                          "\t>>> (3) Show all Tasks grouped by project \n" +
+                          "\t>>> (4) Show Task List of a certain project\n" +
+                          "\t>>> (5) Show Task List with certain due date\n" +
+                          "\t>>> (6) Back");
         return this.integerValidator(1,6);
     }
 
+    /**
+     * Show the menu for edit options
+     * @return The valid option number
+     */
+    public int showEditTaskOption(){
+        System.out.println( ">>> What do you want to edit?\n" +
+                            "\t>>> (1) Title\n" +
+                            "\t>>> (2) Due Date\n" +
+                            "\t>>> (3) Project\n" +
+                            "\t>>> (4) Status\n" +
+                            "\t>>> (5) Remove"
+        );
+        return this.integerValidator(1,5);
+    }
 
     /**
-     * Check if the user input value is a number within the specified range.
+     * Check if the user enters a valid number within the specified range.
      * @param min The lower bond for user input.
      * @param max The upper bond for user input.
      * @return The valid number within the range.
@@ -51,9 +67,9 @@ public class Option {
     public int integerValidator(int min, int max){
         int number;
         do {
-            System.out.printf("\nhint: Please choose a number in range %d to %d\n", min, max);
+            System.out.printf("hint: Please choose a number in range %d to %d\n", min, max);
             while (!input.hasNextInt()) {
-                System.out.printf("Not a number! Please choose a number in range %d to %d \n", min, max);
+                System.out.printf("NOT a number! PLEASE choose a number in range %d to %d \n", min, max);
                 input.next();
             }
             number = input.nextInt();
@@ -63,23 +79,64 @@ public class Option {
     }
 
     /**
-     * Check if the user input string is a valid date.
+     * Check if user enters the valid status.
+     * @return The valid status.
+     */
+
+    public Status statusValidator(){
+        Boolean isValid = false;
+        Status validStatus = Status.Not_Done;
+        System.out.println("hint: Please enter 'Done' or 'Not_Done'");
+        do {
+            try {
+                validStatus = Status.valueOf(input.next());
+                isValid = true;
+            } catch (Exception e){
+                System.out.println("PLEASE enter the EXACT word 'Done' or 'Not_Done;");
+            }
+        }
+        while(isValid == false);
+        return validStatus;
+    }
+
+    /**
+     * Check if the user enters a valid date.
      * @return The valid date.
      */
     public LocalDate dateValidator(){
-        Boolean success = false;
-        LocalDate date = LocalDate.now();
+        Boolean isValid = false;
+        LocalDate validDate = LocalDate.now();
+        System.out.println("Please Enter date in this format! yyyy-MM-dd");
         do {
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                date = LocalDate.parse(input.next(), formatter);
-                success = true;
+                validDate = LocalDate.parse(input.next(), formatter);
+                isValid = true;
 
             } catch (Exception e) {
-                System.out.println("Please Enter date in correct format! like 2019-04-13");
+                System.out.println("PLEASE Enter date in correct format! like 2019-04-13");
             }
         }
-        while (success == false);
-        return date;
+        while (isValid == false);
+        return validDate;
+    }
+
+    /**
+     * Check if user insert valid string (not empty)
+     * @return The valid string.
+     */
+    public String stringValidator(){
+        Boolean isValid = false;
+        String validString;
+        do {
+                validString = input.next();
+                if (validString.trim().length() != 0){
+                    isValid = true;
+                } else {
+                    System.out.println("PLEASE USE your keyboard to TYPE!!!");
+                }
+        }
+        while (isValid == false);
+        return validString;
     }
 }
