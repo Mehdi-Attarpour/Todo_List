@@ -4,7 +4,6 @@ import main.data.Project;
 import main.data.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,16 @@ public final class Print {
 
     private Print(){
 
+    }
+
+    /**
+     * Print task.
+     * @param task Task to be prited.
+     */
+    public static void printTask(Task task){
+        System.out.println("---------------------------------------------------------------------------------------------------------------");
+        System.out.println(task);
+        System.out.println("---------------------------------------------------------------------------------------------------------------\n");
     }
 
     /**

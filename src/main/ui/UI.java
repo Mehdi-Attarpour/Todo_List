@@ -109,31 +109,30 @@ public class UI {
     /**
      * Edit and update task if it won't be a duplicate task.
      */
-    public void runEditCommand(){
-        Task taskToEdit = this.getOneTaskToEdit();
-        switch (opt.showEditTaskOption()){
-            case 1 : this.editTitle(taskToEdit);
-            case 2 : this.editDueDate(taskToEdit);
-            case 3 : this.editProject(taskToEdit);
-            case 4 : this.editStatus(taskToEdit);
+     public void runEditCommand(){
+        if(this.list.size() == 0){
+            System.out.println("---------------------------------------------------------");
+            System.out.println("There is nothing to edit. Please add Task first.");
+            System.out.println("---------------------------------------------------------");
+            firstCommand();
+        } else {
+            Print.printList(list );
+            Task taskToEdit = this.getOneTaskToEdit();
+            switch (opt.showEditTaskOption()){
+                case 1 : this.editTitle(taskToEdit);
+                case 2 : this.editDueDate(taskToEdit);
+                case 3 : this.editProject(taskToEdit);
+                case 4 : this.editStatus(taskToEdit);
+                case 5 : this.removeTask(taskToEdit);
+            }
         }
-    }
 
-    public ArrayList<Task> getTasksArrayToEdit(){
-        System.out.println("Which Task do you want to edit? Please insert the title.");
-        String taskTitleToEdit = opt.stringValidator();
-        return (ArrayList<Task>)
-                this.list.stream()
-                .filter(x -> x.getTitle().equalsIgnoreCase(taskTitleToEdit))
-                .collect(Collectors.toList());
     }
 
     public Task getOneTaskToEdit(){
-        ArrayList<Task> taskArrayToEdit = this.getTasksArrayToEdit();
-        Print.printList(taskArrayToEdit);
-        System.out.println("Please confirm which task do you want to edit (Enter the number of task)");
-        int id = opt.integerValidator(1, taskArrayToEdit.size());
-        return taskArrayToEdit.get(id - 1);
+        System.out.println("\nPlease confirm which task do you want to edit (Enter the number of task)");
+        int id = opt.integerValidator(1, list.size());
+        return list.get(id - 1);
     }
 
     /**
@@ -236,6 +235,20 @@ public class UI {
         Project project = taskToEdit.getProject();
         Status status = getNewStatus();
         updateTask(taskToEdit, title, dueDate, project, status);
+    }
+
+    /**
+     * Delete task.
+     * @param taskToRemove Task to be removed.
+     */
+    public void removeTask(Task taskToRemove){
+        if(list.remove(taskToRemove)){
+            System.out.println("Task removed successfully.");
+            firstCommand();
+        } else {
+            System.out.println("Something is wrong pleas try again.");
+            firstCommand();
+        }
     }
 
     /**

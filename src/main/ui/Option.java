@@ -17,7 +17,7 @@ public class Option {
      * @return The valid option number.
      */
     public int firstOptions(){
-        System.out.println( ">> Pick an option:\n" +
+        System.out.println( "\n>> Pick an option:\n" +
                 ">> (1) Show Tasks\n" +
                 ">> (2) Add New Task\n" +
                 ">> (3) Edit Task (update, mark as done, remove)\n" +
@@ -32,8 +32,7 @@ public class Option {
      * @return The valid option number.
      */
     public int showTaskOptions(){
-        System.out.println("\n===============================================================================================================");
-        System.out.println( ">>> How do you want to see the Tasks:\n" +
+        System.out.println( "\n>>> How do you want to see the Tasks:\n" +
                           "\t>>> (1) Show all Tasks sorted by title \n" +
                           "\t>>> (2) Show all Tasks sorted by due date \n" +
                           "\t>>> (3) Show all Tasks grouped by project \n" +
@@ -48,7 +47,7 @@ public class Option {
      * @return The valid option number
      */
     public int showEditTaskOption(){
-        System.out.println( ">>> What do you want to edit?\n" +
+        System.out.println( "\n>>> What do you want to edit?\n" +
                             "\t>>> (1) Title\n" +
                             "\t>>> (2) Due Date\n" +
                             "\t>>> (3) Project\n" +

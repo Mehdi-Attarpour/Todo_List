@@ -26,30 +26,24 @@ public class TaskList extends ArrayList<Task> {
      * @see Task for task equality conditions.
      * @see Project for projects equality conditions
      */
-    public boolean addTask(String title, LocalDate dueDate, Project project, Status status) {
-        boolean addSucceed = true;
-        Task newTask = new Task(title, dueDate, project, status);
-        for (Task task : this) {
-            if (task.equals(newTask)) {
-                addSucceed = false;
-                System.out.println("\nYou already have the same task. Please try again\n");
-                return addSucceed;
-            }
-        }
-        for (Task task : this) {
-            if (task.getProject().equals(project)) {
-                newTask.setProject(task.getProject());
-            }
-        }
-        this.add(newTask);
-        System.out.println("Task Added / Edited successfully!!!");
-        System.out.println("---------------------------------------------------------------------------------------------------------------");
-        System.out.println(this.get(this.size()-1));
-        System.out.println("---------------------------------------------------------------------------------------------------------------");
-        System.out.println("\t\tNote\n\t\tThe Task status is set as 'Not_Done'.\n\t\tIf you want to change it please choose edit option.\n");
-        return addSucceed;
-    }
-
+     public boolean addTask(String title, LocalDate dueDate, Project project, Status status) {
+         boolean addSucceed = true;
+         Task newTask = new Task(title, dueDate, project, status);
+         for (Task task : this) {
+             if (task.equals(newTask)) {
+                 addSucceed = false;
+                 System.out.println("\nYou already have the same task. Please try again\n");
+                 return addSucceed;
+             }
+         }
+         for (Task task : this) {
+             if (task.getProject().equals(project)) {
+                 newTask.setProject(task.getProject());
+             }
+         }
+         this.add(newTask);
+         return addSucceed;
+     }
 
     /**
      * Remove task by its title.
