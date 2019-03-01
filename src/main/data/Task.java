@@ -1,5 +1,7 @@
 package main.data;
 
+import java.io.Serializable;
+
 import java.time.LocalDate;
 
 /**
@@ -7,7 +9,9 @@ import java.time.LocalDate;
  * such as title, due date, project and status.
  */
 
-public class Task {
+public class Task implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String title;
     private LocalDate dueDate;

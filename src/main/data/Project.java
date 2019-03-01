@@ -1,9 +1,11 @@
 package main.data;
 
+import java.io.Serializable;
+
 /**
  * A class to hold details about each project such as name.
  */
-public class Project {
+public class Project implements Serializable {
     private String title;
 
     public Project(String title){
