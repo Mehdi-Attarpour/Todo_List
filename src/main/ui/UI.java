@@ -1,5 +1,6 @@
 package main.ui;
 
+import main.FileHandler;
 import main.data.Project;
 import main.data.Status;
 import main.data.Task;
@@ -7,14 +8,13 @@ import main.data.TaskList;
 import main.print.Print;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 
 public class UI {
 
     private TaskList list;
     private Option opt;
+    private FileHandler fileHandler;
 
     /**
      * Constructor for UI.
@@ -23,6 +23,7 @@ public class UI {
     public UI(){
         this.list = new TaskList();
         opt = new Option();
+        fileHandler = new FileHandler();
     }
 
     /**
@@ -30,6 +31,7 @@ public class UI {
      * and also a summary of data saved before.
      */
     public void welcome() {
+        this.list = fileHandler.load();
         System.out.println("\n>> Welcome to TODO-List APP");
         System.out.println(list.summary() + "\n");
         this.firstCommand();
@@ -45,8 +47,8 @@ public class UI {
             case 1 : runShowTaskCommand(); break;
             case 2 : runAddTaskCommand(); break;
             case 3 : runEditCommand(); break;
-//            case 4 : runLoadCommand(); break;
-//            case 5 : runSaveCommand(); break;
+            case 4 : runLoadCommand(); break;
+            case 5 : runSaveCommand(); break;
             case 6 : runQuitCommand(); break;
         }
     }
@@ -100,6 +102,9 @@ public class UI {
         System.out.println("Please insert the project name");
         Project project = new Project(opt.stringValidator());
         if(this.list.addTask(title, dueDate, project, Status.Not_Done)){
+            System.out.println("Task Added successfully!!!");
+            Print.printTask(list.get(list.size()-1));
+            System.out.println("\t\tNote\n\t\tThe Task status is set as 'Not_Done'.\n\t\tIf you want to change it please choose edit option.\n");
             this.firstCommand();
         } else {
             this.runAddTaskCommand();
@@ -109,12 +114,11 @@ public class UI {
     /**
      * Edit and update task if it won't be a duplicate task.
      */
-     public void runEditCommand(){
+    public void runEditCommand(){
         if(this.list.size() == 0){
             System.out.println("---------------------------------------------------------");
-            System.out.println("There is nothing to edit. Please add Task first.");
+            System.out.println("\nThere is nothing to edit. Please add Task first.");
             System.out.println("---------------------------------------------------------");
-            firstCommand();
         } else {
             Print.printList(list );
             Task taskToEdit = this.getOneTaskToEdit();
@@ -129,6 +133,10 @@ public class UI {
 
     }
 
+    /**
+     * Get access to the task for editing.
+     * @return The task to edit.
+     */
     public Task getOneTaskToEdit(){
         System.out.println("\nPlease confirm which task do you want to edit (Enter the number of task)");
         int id = opt.integerValidator(1, list.size());
@@ -264,10 +272,33 @@ public class UI {
     public void updateTask(Task task,String title, LocalDate dueDate, Project project, Status status){
         if(list.addTask(title, dueDate, project, status)){
             list.remove(task);
+            System.out.println();
+            System.out.println("Task is updated successfully.");
+            Print.printTask(list.get(list.size()-1));
             firstCommand();
         } else {
+            System.out.println("Something is wrong pleas try again.");
             firstCommand();
         }
+    }
+
+    /**
+     * Save the task list a file.
+     */
+
+    public void runSaveCommand(){
+        if(fileHandler.save(list)){
+            System.out.println("Saved Successfully");
+            firstCommand();
+        }
+    }
+
+    /**
+     * Load the saved task list.
+     */
+    public void runLoadCommand(){
+        this.list = fileHandler.load();
+            firstCommand();
     }
 
     /**
