@@ -26,31 +26,31 @@ public class TaskList extends ArrayList<Task> {
      * @see Task for task equality conditions.
      * @see Project for projects equality conditions
      */
-    public boolean addTask(String title, LocalDate dueDate, Project project) {
-        boolean addSucceed = true;
-        Task newTask = new Task(title, dueDate, project);
-        for (Task task : this) {
-            if (task.equals(newTask)) {
-                addSucceed = false;
-                return addSucceed;
-            }
-        }
-        for (Task task : this) {
-            if (task.getProject().equals(project)) {
-                newTask.setProject(task.getProject());
-            }
-        }
-        this.add(newTask);
-        return addSucceed;
-    }
-
+     public boolean addTask(String title, LocalDate dueDate, Project project, Status status) {
+         boolean addSucceed = true;
+         Task newTask = new Task(title, dueDate, project, status);
+         for (Task task : this) {
+             if (task.equals(newTask)) {
+                 addSucceed = false;
+                 System.out.println("\nYou already have the same task. Please try again\n");
+                 return addSucceed;
+             }
+         }
+         for (Task task : this) {
+             if (task.getProject().equals(project)) {
+                 newTask.setProject(task.getProject());
+             }
+         }
+         this.add(newTask);
+         return addSucceed;
+     }
 
     /**
      * Remove task by its title.
      *
      * @param taskTitle Task's title which will be removed
      */
-    public void removeTask(String taskTitle) {
+    public void removeAllTaskByTitle(String taskTitle) {
         this.removeIf(x -> x.getTitle().equalsIgnoreCase(taskTitle));
     }
 
@@ -158,7 +158,6 @@ public class TaskList extends ArrayList<Task> {
                         .count();
 
         return String.format(">> You have %d Tasks todo and %d Tasks are done.", numberOfToDoTask, numberOfDoneTask);
-
     }
 
 }
