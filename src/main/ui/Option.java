@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Hold all options and validator methods
  */
 public class Option {
-    static Scanner input = new Scanner(System.in).useDelimiter("\n");
+    static Scanner scanner = new Scanner(System.in).useDelimiter("\n");
 
     /**
      * Show the first menu for user to choose.
@@ -59,19 +59,19 @@ public class Option {
 
     /**
      * Check if the user enters a valid number within the specified range.
-     * @param min The lower bond for user input.
-     * @param max The upper bond for user input.
+     * @param min The lower bond for user scanner.
+     * @param max The upper bond for user scanner.
      * @return The valid number within the range.
      */
     public int integerValidator(int min, int max){
         int number;
         do {
             System.out.printf("hint: Please choose a number in range %d to %d\n", min, max);
-            while (!input.hasNextInt()) {
+            while (!scanner.hasNextInt()) {
                 System.out.printf("NOT a number! PLEASE choose a number in range %d to %d \n", min, max);
-                input.next();
+                scanner.next();
             }
-            number = input.nextInt();
+            number = scanner.nextInt();
 
         } while(number > max || number < min);
         return number;
@@ -88,7 +88,7 @@ public class Option {
         System.out.println("hint: Please enter 'Done' or 'Not_Done'");
         do {
             try {
-                validStatus = Status.valueOf(input.next());
+                validStatus = Status.valueOf(scanner.next());
                 isValid = true;
             } catch (Exception e){
                 System.out.println("PLEASE enter the EXACT word 'Done' or 'Not_Done;");
@@ -109,7 +109,7 @@ public class Option {
         do {
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                validDate = LocalDate.parse(input.next(), formatter);
+                validDate = LocalDate.parse(scanner.next(), formatter);
                 isValid = true;
 
             } catch (Exception e) {
@@ -128,7 +128,7 @@ public class Option {
         Boolean isValid = false;
         String validString;
         do {
-                validString = input.next();
+                validString = scanner.next();
                 if (validString.trim().length() != 0){
                     isValid = true;
                 } else {
