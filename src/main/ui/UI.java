@@ -35,6 +35,7 @@ public class UI {
         System.out.println("\n>> Welcome to TODO-List APP");
         System.out.println(list.summary() + "\n");
         this.firstCommand();
+        this.runQuitCommand();
     }
 
     /**
@@ -42,14 +43,28 @@ public class UI {
      * and invoke right method regarding user's choice
      */
     public void firstCommand() {
-        switch (opt.firstOptions()) {
+        boolean running = true;
+        while (running) {
+            switch (opt.firstOptions()) {
 
-            case 1 : runShowTaskCommand(); break;
-            case 2 : runAddTaskCommand(); break;
-            case 3 : runEditCommand(); break;
-            case 4 : runLoadCommand(); break;
-            case 5 : runSaveCommand(); break;
-            case 6 : runQuitCommand(); break;
+                case 1:
+                    runShowTaskCommand();
+                    break;
+                case 2:
+                    runAddTaskCommand();
+                    break;
+                case 3:
+                    runEditCommand();
+                    break;
+                case 4:
+                    runLoadCommand();
+                    break;
+                case 5:
+                    runSaveCommand();
+                    break;
+                case 6:
+                    running = false;
+            }
         }
     }
 
@@ -58,35 +73,32 @@ public class UI {
      * and invoke right method regarding user's choice
      */
     public void runShowTaskCommand() {
-
-        switch (opt.showTaskOptions()) {
-            case 1: {
-                Print.printList(this.list.sortTaskListByTitle());
-                this.runShowTaskCommand();
-                break;
-            }
-            case 2: {
-                Print.printList(this.list.sortTaskListByDueDate());
-                this.runShowTaskCommand();
-                break;
-            }
-            case 3: {
-                Print.printMap(this.list.groupedByProject());
-                this.runShowTaskCommand();
-                break;
-            }
-            case 4: {
-                Print.printList(this.list.taskByProject(getProjectNameCommand()));
-                this.runShowTaskCommand();
-                break;
-            }
-            case 5: {
-                Print.printList(this.list.taskByDueDate(getDueDate()));
-                this.runShowTaskCommand();
-                break;
-            }
-            case 6: {
-                this.firstCommand();
+        boolean running = true;
+        while (running) {
+            switch (opt.showTaskOptions()) {
+                case 1: {
+                    Print.printList(this.list.sortTaskListByTitle());
+                    break;
+                }
+                case 2: {
+                    Print.printList(this.list.sortTaskListByDueDate());
+                    break;
+                }
+                case 3: {
+                    Print.printMap(this.list.groupedByProject());
+                    break;
+                }
+                case 4: {
+                    Print.printList(this.list.taskByProject(getProjectNameCommand()));
+                    break;
+                }
+                case 5: {
+                    Print.printList(this.list.taskByDueDate(getDueDate()));
+                    break;
+                }
+                case 6: {
+                    running = false;
+                }
             }
         }
     }
@@ -105,9 +117,8 @@ public class UI {
             System.out.println("Task Added successfully!!!");
             Print.printTask(list.get(list.size()-1));
             System.out.println("\t\tNote\n\t\tThe Task status is set as 'Not_Done'.\n\t\tIf you want to change it please choose edit option.\n");
-            this.firstCommand();
         } else {
-            this.runAddTaskCommand();
+            System.out.println("Something is wrong please try again.");;
         }
     }
 
@@ -117,16 +128,16 @@ public class UI {
     public void runEditCommand(){
         if(this.list.size() == 0){
             System.out.println("---------------------------------------------------------");
-            System.out.println("\nThere is nothing to edit. Please add Task first.");
+            System.out.println("There is nothing to edit. Please add Task first.");
             System.out.println("---------------------------------------------------------");
         } else {
             Print.printList(list );
             Task taskToEdit = this.getOneTaskToEdit();
             switch (opt.showEditTaskOption()){
-                case 1 : this.editTitle(taskToEdit);
-                case 2 : this.editDueDate(taskToEdit);
-                case 3 : this.editProject(taskToEdit);
-                case 4 : this.editStatus(taskToEdit);
+                case 1 : this.editTitle(taskToEdit); break;
+                case 2 : this.editDueDate(taskToEdit); break;
+                case 3 : this.editProject(taskToEdit); break;
+                case 4 : this.editStatus(taskToEdit); break;
                 case 5 : this.removeTask(taskToEdit);
             }
         }
@@ -252,10 +263,8 @@ public class UI {
     public void removeTask(Task taskToRemove){
         if(list.remove(taskToRemove)){
             System.out.println("Task removed successfully.");
-            firstCommand();
         } else {
             System.out.println("Something is wrong pleas try again.");
-            firstCommand();
         }
     }
 
@@ -275,10 +284,8 @@ public class UI {
             System.out.println();
             System.out.println("Task is updated successfully.");
             Print.printTask(list.get(list.size()-1));
-            firstCommand();
         } else {
             System.out.println("Something is wrong pleas try again.");
-            firstCommand();
         }
     }
 
@@ -289,7 +296,6 @@ public class UI {
     public void runSaveCommand(){
         if(fileHandler.save(list)){
             System.out.println("Saved Successfully");
-            firstCommand();
         }
     }
 
@@ -298,7 +304,6 @@ public class UI {
      */
     public void runLoadCommand(){
         this.list = fileHandler.load();
-            firstCommand();
     }
 
     /**
