@@ -1,6 +1,8 @@
 package main.ui;
 
 import main.FileHandler;
+import main.comparator.DateComparator;
+import main.comparator.TitleComparator;
 import main.data.Project;
 import main.data.Status;
 import main.data.Task;
@@ -77,11 +79,11 @@ public class UI {
         while (running) {
             switch (opt.showTaskOptions()) {
                 case 1: {
-                    Print.printList(this.list.sortTaskListByTitle());
+                    Print.printList(this.list.sortList(new TitleComparator()));
                     break;
                 }
                 case 2: {
-                    Print.printList(this.list.sortTaskListByDueDate());
+                    Print.printList(this.list.sortList(new DateComparator()));
                     break;
                 }
                 case 3: {
@@ -89,11 +91,11 @@ public class UI {
                     break;
                 }
                 case 4: {
-                    Print.printList(this.list.taskByProject(getProjectNameCommand()));
+                    Print.printList(this.list.taskByProject(getTaskDetail("Which project?")));
                     break;
                 }
                 case 5: {
-                    Print.printList(this.list.taskByDueDate(getDueDate()));
+                    Print.printList(this.list.taskByDueDate(getDate("Which date?")));
                     break;
                 }
                 case 6: {
@@ -107,12 +109,9 @@ public class UI {
      * Add task if it is not already in task list.
      */
     private void runAddTaskCommand() {
-        System.out.println("Please insert the Title: ");
-        String title = opt.stringValidator();
-        System.out.println("Please insert the due date: ");
-        LocalDate dueDate = opt.dateValidator();
-        System.out.println("Please insert the project name");
-        Project project = new Project(opt.stringValidator());
+        String title = getTaskDetail("Please insert the Title: ");
+        LocalDate dueDate = getDate("Please insert the due date: ");
+        Project project = new Project(getTaskDetail("Please insert the project name"));
         if(this.list.addTask(title, dueDate, project, Status.Not_Done)){
             System.out.println("Task Added successfully!!!");
             Print.printTask(list.get(list.size()-1));
@@ -155,29 +154,21 @@ public class UI {
     }
 
     /**
-     * Ask Which project from user.
+     * Get valid task title or project title from user.
+     * @param question Shows what user must enter.
+     * @return The valid title for task or project.
      */
-    public String getProjectNameCommand() {
-        System.out.println("Which project?");
+    public String getTaskDetail(String question){
+        System.out.println(question);
         return opt.stringValidator();
     }
-
     /**
      * Get a date from user.
      * @return The valid date.
      */
-    public LocalDate getDueDate() {
-        System.out.println("Which date?");
+    public LocalDate getDate(String question){
+        System.out.println(question);
         return opt.dateValidator();
-    }
-
-    /**
-     * Get valid task title.
-     * @return The valid task title.
-     */
-    public String getNewTaskTitle(){
-        System.out.println("Please enter new title to update the task:");
-        return opt.stringValidator();
     }
 
     /**
@@ -185,7 +176,7 @@ public class UI {
      * @param taskToEdit Task to be updated.
      */
     public void editTitle(Task taskToEdit){
-        String title = getNewTaskTitle();
+        String title = getTaskDetail("Please enter new title to update the task:");
         LocalDate dueDate = taskToEdit.getDueDate();
         Project project = taskToEdit.getProject();
         Status status = taskToEdit.getStatus();
@@ -193,20 +184,11 @@ public class UI {
     }
 
     /**
-     * Get valid date.
-     * @return The valid date.
-     */
-    private LocalDate getNewDueDate() {
-        System.out.println("Please enter new due date to update the task");
-        return opt.dateValidator();
-    }
-
-    /**
      * Update task's due date.
      * @param taskToEdit Task to be updated.
      */
     public void editDueDate(Task taskToEdit){
-        LocalDate dueDate = getNewDueDate();
+        LocalDate dueDate = getDate("Please enter new due date to update the task");
         String title = taskToEdit.getTitle();
         Project project = taskToEdit.getProject();
         Status status = taskToEdit.getStatus();
@@ -214,21 +196,11 @@ public class UI {
     }
 
     /**
-     * Get valid project title.
-     * @return The valid project's title.
-     */
-    private Project getNewProject() {
-        System.out.println("Please enter new project to update the task");
-        Project newProject = new Project(opt.stringValidator());
-        return newProject;
-    }
-
-    /**
      * Update task's project.
      * @param taskToEdit Task to be updated.
      */
     public void editProject(Task taskToEdit){
-        Project project = getNewProject();
+        Project project = new Project(getTaskDetail("Please enter new project to update the task"));
         String title = taskToEdit.getTitle();
         LocalDate dueDate = taskToEdit.getDueDate();
         Status status = taskToEdit.getStatus();
@@ -292,7 +264,6 @@ public class UI {
     /**
      * Save the task list a file.
      */
-
     public void runSaveCommand(){
         if(fileHandler.save(list)){
             System.out.println("Saved Successfully");

@@ -36,6 +36,7 @@ public class TaskList extends ArrayList<Task> {
                  return addSucceed;
              }
          }
+         // This part prevents to create a new project if the project has been already created by previous task or tasks.
          for (Task task : this) {
              if (task.getProject().equals(project)) {
                  newTask.setProject(task.getProject());
@@ -55,26 +56,14 @@ public class TaskList extends ArrayList<Task> {
     }
 
     /**
-     * Filter the all tasks with 'Done' status
+     * Filter the all tasks regarding to status.
      *
-     * @return An ArrayList of tasks with 'Done' status
+     * @return An ArrayList of tasks with desire status.
      */
-    public ArrayList<Task> doneTasks() {
+    public ArrayList<Task> taskByStatus(Status status){
         return (ArrayList<Task>)
                 this.stream()
-                        .filter(x -> x.getStatus() == Status.Done)
-                        .collect(Collectors.toList());
-    }
-
-    /**
-     * Filter all tasks with 'Not_Done' status.
-     *
-     * @return An ArrayList of tasks with 'Not_Done' status.
-     */
-    public ArrayList<Task> toDoTasks() {
-        return (ArrayList<Task>)
-                this.stream()
-                        .filter(x -> x.getStatus() == Status.Not_Done)
+                        .filter(x -> x.getStatus() == status)
                         .collect(Collectors.toList());
     }
 
@@ -105,30 +94,19 @@ public class TaskList extends ArrayList<Task> {
     }
 
     /**
-     * Sort the tasks according to their titles.
+     * Sort the tasks according to given criteria.
      *
      * @return An ArrayList of sorted task by title.
      * @see TitleComparator
+     * @see DateComparator
      */
 
-    public ArrayList<Task> sortTaskListByTitle() {
-        ArrayList<Task> taskListSortedByTitle = (ArrayList) this.clone();
-        Collections.sort(taskListSortedByTitle, new TitleComparator());
-        return taskListSortedByTitle;
-    }
+    public ArrayList<Task> sortList(Comparator<Task> comparator){
+        ArrayList<Task> sortedList = (ArrayList) this.clone();
+        Collections.sort(sortedList, comparator);
+        return sortedList;
 
-    /**
-     * Sort all tasks according to their due dates.
-     *
-     * @return An ArrayList of sorted task by due date
-     * @see TitleComparator
-     */
-    public ArrayList<Task> sortTaskListByDueDate() {
-        ArrayList<Task> taskListSortedByDate = (ArrayList) this.clone();
-        Collections.sort(taskListSortedByDate, new DateComparator());
-        return taskListSortedByDate;
     }
-
     /**
      * Grouped all tasks according to their projects.
      *
@@ -147,15 +125,8 @@ public class TaskList extends ArrayList<Task> {
      */
 
     public String summary() {
-        long numberOfToDoTask =
-                this.stream()
-                        .filter(x -> x.getStatus() == Status.Not_Done)
-                        .count();
-
-        long numberOfDoneTask =
-                this.stream()
-                        .filter(x -> x.getStatus() == Status.Done)
-                        .count();
+        int numberOfToDoTask = this.taskByStatus(Status.Not_Done).size();
+        int numberOfDoneTask = this.taskByStatus(Status.Done).size();
 
         return String.format(">> You have %d Tasks todo and %d Tasks are done.", numberOfToDoTask, numberOfDoneTask);
     }
