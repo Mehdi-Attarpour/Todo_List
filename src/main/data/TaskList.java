@@ -48,7 +48,6 @@ public class TaskList extends ArrayList<Task> {
 
     /**
      * Remove task by its title.
-     *
      * @param taskTitle Task's title which will be removed
      */
     public void removeAllTaskByTitle(String taskTitle) {
@@ -57,7 +56,6 @@ public class TaskList extends ArrayList<Task> {
 
     /**
      * Filter the all tasks regarding to status.
-     *
      * @return An ArrayList of tasks with desire status.
      */
     public ArrayList<Task> taskByStatus(Status status){
@@ -100,13 +98,12 @@ public class TaskList extends ArrayList<Task> {
      * @see TitleComparator
      * @see DateComparator
      */
-
     public ArrayList<Task> sortList(Comparator<Task> comparator){
         ArrayList<Task> sortedList = (ArrayList) this.clone();
         Collections.sort(sortedList, comparator);
         return sortedList;
-
     }
+
     /**
      * Grouped all tasks according to their projects.
      *
@@ -123,12 +120,10 @@ public class TaskList extends ArrayList<Task> {
      *
      * @return A string showing number of 'Done' and 'Not-Done' tasks.
      */
-
     public String summary() {
         int numberOfToDoTask = this.taskByStatus(Status.Not_Done).size();
         int numberOfDoneTask = this.taskByStatus(Status.Done).size();
 
         return String.format(">> You have %d Tasks todo and %d Tasks are done.", numberOfToDoTask, numberOfDoneTask);
     }
-
 }

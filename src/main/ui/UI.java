@@ -17,6 +17,7 @@ public class UI {
     private TaskList list;
     private Option opt;
     private FileHandler fileHandler;
+    private Validator validator;
 
     /**
      * Constructor for UI.
@@ -26,6 +27,7 @@ public class UI {
         this.list = new TaskList();
         opt = new Option();
         fileHandler = new FileHandler();
+        validator = new Validator();
     }
 
     /**
@@ -48,24 +50,12 @@ public class UI {
         boolean running = true;
         while (running) {
             switch (opt.firstOptions()) {
-
-                case 1:
-                    runShowTaskCommand();
-                    break;
-                case 2:
-                    runAddTaskCommand();
-                    break;
-                case 3:
-                    runEditCommand();
-                    break;
-                case 4:
-                    runLoadCommand();
-                    break;
-                case 5:
-                    runSaveCommand();
-                    break;
-                case 6:
-                    running = false;
+                case 1: runShowTaskCommand(); break;
+                case 2: runAddTaskCommand(); break;
+                case 3: runEditCommand(); break;
+                case 4: runLoadCommand(); break;
+                case 5: runSaveCommand(); break;
+                case 6: running = false;
             }
         }
     }
@@ -78,29 +68,15 @@ public class UI {
         boolean running = true;
         while (running) {
             switch (opt.showTaskOptions()) {
-                case 1: {
-                    Print.printList(this.list.sortList(new TitleComparator()));
-                    break;
-                }
-                case 2: {
-                    Print.printList(this.list.sortList(new DateComparator()));
-                    break;
-                }
-                case 3: {
-                    Print.printMap(this.list.groupedByProject());
-                    break;
-                }
-                case 4: {
-                    Print.printList(this.list.taskByProject(getTaskDetail("Which project?")));
-                    break;
-                }
-                case 5: {
-                    Print.printList(this.list.taskByDueDate(getDate("Which date?")));
-                    break;
-                }
-                case 6: {
-                    running = false;
-                }
+                case 1: System.out.println("\n" + list.summary()); break;
+                case 2: Print.printList(this.list.taskByStatus(Status.Done)); break;
+                case 3:Print.printList(this.list.taskByStatus(Status.Done)); break;
+                case 4: Print.printList(this.list.sortList(new TitleComparator())); break;
+                case 5: Print.printList(this.list.sortList(new DateComparator())); break;
+                case 6: Print.printMap(this.list.groupedByProject()); break;
+                case 7: Print.printList(this.list.taskByProject(getTaskDetail("Which project?"))); break;
+                case 8: Print.printList(this.list.taskByDueDate(getDate("Which date?", LocalDate.parse("0001-01-01")))); break;
+                case 9: running = false;
             }
         }
     }
@@ -110,7 +86,7 @@ public class UI {
      */
     private void runAddTaskCommand() {
         String title = getTaskDetail("Please insert the Title: ");
-        LocalDate dueDate = getDate("Please insert the due date: ");
+        LocalDate dueDate = getDate("Please insert the due date: ", LocalDate.now());
         Project project = new Project(getTaskDetail("Please insert the project name"));
         if(this.list.addTask(title, dueDate, project, Status.Not_Done)){
             System.out.println("Task Added successfully!!!");
@@ -126,9 +102,9 @@ public class UI {
      */
     public void runEditCommand(){
         if(this.list.size() == 0){
-            System.out.println("---------------------------------------------------------");
+            Print.divider();
             System.out.println("There is nothing to edit. Please add Task first.");
-            System.out.println("---------------------------------------------------------");
+            Print.divider();
         } else {
             Print.printList(list );
             Task taskToEdit = this.getOneTaskToEdit();
@@ -140,7 +116,6 @@ public class UI {
                 case 5 : this.removeTask(taskToEdit);
             }
         }
-
     }
 
     /**
@@ -149,7 +124,7 @@ public class UI {
      */
     public Task getOneTaskToEdit(){
         System.out.println("\nPlease confirm which task do you want to edit (Enter the number of task)");
-        int id = opt.integerValidator(1, list.size());
+        int id = validator.integerValidator(1, list.size());
         return list.get(id - 1);
     }
 
@@ -160,15 +135,17 @@ public class UI {
      */
     public String getTaskDetail(String question){
         System.out.println(question);
-        return opt.stringValidator();
+        return validator.stringValidator();
     }
     /**
      * Get a date from user.
+     * @param question Show the Question that why Date is needed.
+     * @param oldestValidDate Shows that date must be future or any date is valid.
      * @return The valid date.
      */
-    public LocalDate getDate(String question){
+    public LocalDate getDate(String question, LocalDate oldestValidDate){
         System.out.println(question);
-        return opt.dateValidator();
+        return validator.dateValidator(oldestValidDate);
     }
 
     /**
@@ -188,7 +165,7 @@ public class UI {
      * @param taskToEdit Task to be updated.
      */
     public void editDueDate(Task taskToEdit){
-        LocalDate dueDate = getDate("Please enter new due date to update the task");
+        LocalDate dueDate = getDate("Please enter new due date to update the task", LocalDate.parse("0000-01-01"));
         String title = taskToEdit.getTitle();
         Project project = taskToEdit.getProject();
         Status status = taskToEdit.getStatus();
@@ -213,14 +190,14 @@ public class UI {
      */
     private Status getNewStatus() {
         System.out.println("Please enter new Status to update the task");
-        return opt.statusValidator();
+        return validator.statusValidator();
     }
 
     /**
      * Update task's status.
      * @param taskToEdit Task to be updated.
      */
-    public void editStatus(Task taskToEdit){
+    private void editStatus(Task taskToEdit){
         String title = taskToEdit.getTitle();
         LocalDate dueDate = taskToEdit.getDueDate();
         Project project = taskToEdit.getProject();
@@ -232,7 +209,7 @@ public class UI {
      * Delete task.
      * @param taskToRemove Task to be removed.
      */
-    public void removeTask(Task taskToRemove){
+    private void removeTask(Task taskToRemove){
         if(list.remove(taskToRemove)){
             System.out.println("Task removed successfully.");
         } else {
@@ -250,7 +227,7 @@ public class UI {
      * @param project New project.
      * @param status New status.
      */
-    public void updateTask(Task task,String title, LocalDate dueDate, Project project, Status status){
+    private void updateTask(Task task,String title, LocalDate dueDate, Project project, Status status){
         if(list.addTask(title, dueDate, project, status)){
             list.remove(task);
             System.out.println();
@@ -264,7 +241,7 @@ public class UI {
     /**
      * Save the task list a file.
      */
-    public void runSaveCommand(){
+    private void runSaveCommand(){
         if(fileHandler.save(list)){
             System.out.println("Saved Successfully");
         }
@@ -273,7 +250,7 @@ public class UI {
     /**
      * Load the saved task list.
      */
-    public void runLoadCommand(){
+    private void runLoadCommand(){
         this.list = fileHandler.load();
     }
 
