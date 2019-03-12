@@ -68,12 +68,15 @@ public class UI {
         boolean running = true;
         while (running) {
             switch (opt.showTaskOptions()) {
-                case 1: Print.printList(this.list.sortList(new TitleComparator())); break;
-                case 2: Print.printList(this.list.sortList(new DateComparator())); break;
-                case 3: Print.printMap(this.list.groupedByProject()); break;
-                case 4: Print.printList(this.list.taskByProject(getTaskDetail("Which project?"))); break;
-                case 5: Print.printList(this.list.taskByDueDate(getDate("Which date?", LocalDate.parse("0001-01-01")))); break;
-                case 6: running = false;
+                case 1: System.out.println("\n" + list.summary()); break;
+                case 2: Print.printList(this.list.taskByStatus(Status.Done)); break;
+                case 3:Print.printList(this.list.taskByStatus(Status.Done)); break;
+                case 4: Print.printList(this.list.sortList(new TitleComparator())); break;
+                case 5: Print.printList(this.list.sortList(new DateComparator())); break;
+                case 6: Print.printMap(this.list.groupedByProject()); break;
+                case 7: Print.printList(this.list.taskByProject(getTaskDetail("Which project?"))); break;
+                case 8: Print.printList(this.list.taskByDueDate(getDate("Which date?", LocalDate.parse("0001-01-01")))); break;
+                case 9: running = false;
             }
         }
     }

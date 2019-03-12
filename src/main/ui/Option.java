@@ -27,13 +27,16 @@ public class Option {
      */
     public int showTaskOptions(){
         System.out.println( "\n>>> How do you want to see the Tasks:\n" +
-                          "\t>>> (1) Show all Tasks sorted by title \n" +
-                          "\t>>> (2) Show all Tasks sorted by due date \n" +
-                          "\t>>> (3) Show all Tasks grouped by project \n" +
-                          "\t>>> (4) Show Task List of a certain project\n" +
-                          "\t>>> (5) Show Task List with certain due date\n" +
-                          "\t>>> (6) Back");
-        return validator.integerValidator(1,6);
+                          "\t>>> (1) Show summary \n" +
+                          "\t>>> (2) Show Done Tasks \n" +
+                          "\t>>> (3) Show ToDo (Not_Done) Tasks \n" +
+                          "\t>>> (4) Show all Tasks sorted by title \n" +
+                          "\t>>> (5) Show all Tasks sorted by due date \n" +
+                          "\t>>> (6) Show all Tasks grouped by project \n" +
+                          "\t>>> (7) Show Task List of a certain project\n" +
+                          "\t>>> (8) Show Task List with certain due date\n" +
+                          "\t>>> (9) Back");
+        return validator.integerValidator(1,9);
     }
 
     /**
