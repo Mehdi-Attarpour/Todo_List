@@ -1,6 +1,8 @@
 package main.ui;
 
 import main.FileHandler;
+import main.comparator.DateComparator;
+import main.comparator.TitleComparator;
 import main.data.Project;
 import main.data.Status;
 import main.data.Task;
@@ -35,6 +37,7 @@ public class UI {
         System.out.println("\n>> Welcome to TODO-List APP");
         System.out.println(list.summary() + "\n");
         this.firstCommand();
+        this.runQuitCommand();
     }
 
     /**
@@ -42,14 +45,28 @@ public class UI {
      * and invoke right method regarding user's choice
      */
     public void firstCommand() {
-        switch (opt.firstOptions()) {
+        boolean running = true;
+        while (running) {
+            switch (opt.firstOptions()) {
 
-            case 1 : runShowTaskCommand(); break;
-            case 2 : runAddTaskCommand(); break;
-            case 3 : runEditCommand(); break;
-            case 4 : runLoadCommand(); break;
-            case 5 : runSaveCommand(); break;
-            case 6 : runQuitCommand(); break;
+                case 1:
+                    runShowTaskCommand();
+                    break;
+                case 2:
+                    runAddTaskCommand();
+                    break;
+                case 3:
+                    runEditCommand();
+                    break;
+                case 4:
+                    runLoadCommand();
+                    break;
+                case 5:
+                    runSaveCommand();
+                    break;
+                case 6:
+                    running = false;
+            }
         }
     }
 
@@ -58,35 +75,32 @@ public class UI {
      * and invoke right method regarding user's choice
      */
     public void runShowTaskCommand() {
-
-        switch (opt.showTaskOptions()) {
-            case 1: {
-                Print.printList(this.list.sortTaskListByTitle());
-                this.runShowTaskCommand();
-                break;
-            }
-            case 2: {
-                Print.printList(this.list.sortTaskListByDueDate());
-                this.runShowTaskCommand();
-                break;
-            }
-            case 3: {
-                Print.printMap(this.list.groupedByProject());
-                this.runShowTaskCommand();
-                break;
-            }
-            case 4: {
-                Print.printList(this.list.taskByProject(getProjectNameCommand()));
-                this.runShowTaskCommand();
-                break;
-            }
-            case 5: {
-                Print.printList(this.list.taskByDueDate(getDueDate()));
-                this.runShowTaskCommand();
-                break;
-            }
-            case 6: {
-                this.firstCommand();
+        boolean running = true;
+        while (running) {
+            switch (opt.showTaskOptions()) {
+                case 1: {
+                    Print.printList(this.list.sortList(new TitleComparator()));
+                    break;
+                }
+                case 2: {
+                    Print.printList(this.list.sortList(new DateComparator()));
+                    break;
+                }
+                case 3: {
+                    Print.printMap(this.list.groupedByProject());
+                    break;
+                }
+                case 4: {
+                    Print.printList(this.list.taskByProject(getTaskDetail("Which project?")));
+                    break;
+                }
+                case 5: {
+                    Print.printList(this.list.taskByDueDate(getDate("Which date?")));
+                    break;
+                }
+                case 6: {
+                    running = false;
+                }
             }
         }
     }
@@ -95,19 +109,15 @@ public class UI {
      * Add task if it is not already in task list.
      */
     private void runAddTaskCommand() {
-        System.out.println("Please insert the Title: ");
-        String title = opt.stringValidator();
-        System.out.println("Please insert the due date: ");
-        LocalDate dueDate = opt.dateValidator();
-        System.out.println("Please insert the project name");
-        Project project = new Project(opt.stringValidator());
+        String title = getTaskDetail("Please insert the Title: ");
+        LocalDate dueDate = getDate("Please insert the due date: ");
+        Project project = new Project(getTaskDetail("Please insert the project name"));
         if(this.list.addTask(title, dueDate, project, Status.Not_Done)){
             System.out.println("Task Added successfully!!!");
             Print.printTask(list.get(list.size()-1));
             System.out.println("\t\tNote\n\t\tThe Task status is set as 'Not_Done'.\n\t\tIf you want to change it please choose edit option.\n");
-            this.firstCommand();
         } else {
-            this.runAddTaskCommand();
+            System.out.println("Something is wrong please try again.");;
         }
     }
 
@@ -117,16 +127,16 @@ public class UI {
     public void runEditCommand(){
         if(this.list.size() == 0){
             System.out.println("---------------------------------------------------------");
-            System.out.println("\nThere is nothing to edit. Please add Task first.");
+            System.out.println("There is nothing to edit. Please add Task first.");
             System.out.println("---------------------------------------------------------");
         } else {
             Print.printList(list );
             Task taskToEdit = this.getOneTaskToEdit();
             switch (opt.showEditTaskOption()){
-                case 1 : this.editTitle(taskToEdit);
-                case 2 : this.editDueDate(taskToEdit);
-                case 3 : this.editProject(taskToEdit);
-                case 4 : this.editStatus(taskToEdit);
+                case 1 : this.editTitle(taskToEdit); break;
+                case 2 : this.editDueDate(taskToEdit); break;
+                case 3 : this.editProject(taskToEdit); break;
+                case 4 : this.editStatus(taskToEdit); break;
                 case 5 : this.removeTask(taskToEdit);
             }
         }
@@ -144,29 +154,21 @@ public class UI {
     }
 
     /**
-     * Ask Which project from user.
+     * Get valid task title or project title from user.
+     * @param question Shows what user must enter.
+     * @return The valid title for task or project.
      */
-    public String getProjectNameCommand() {
-        System.out.println("Which project?");
+    public String getTaskDetail(String question){
+        System.out.println(question);
         return opt.stringValidator();
     }
-
     /**
      * Get a date from user.
      * @return The valid date.
      */
-    public LocalDate getDueDate() {
-        System.out.println("Which date?");
+    public LocalDate getDate(String question){
+        System.out.println(question);
         return opt.dateValidator();
-    }
-
-    /**
-     * Get valid task title.
-     * @return The valid task title.
-     */
-    public String getNewTaskTitle(){
-        System.out.println("Please enter new title to update the task:");
-        return opt.stringValidator();
     }
 
     /**
@@ -174,7 +176,7 @@ public class UI {
      * @param taskToEdit Task to be updated.
      */
     public void editTitle(Task taskToEdit){
-        String title = getNewTaskTitle();
+        String title = getTaskDetail("Please enter new title to update the task:");
         LocalDate dueDate = taskToEdit.getDueDate();
         Project project = taskToEdit.getProject();
         Status status = taskToEdit.getStatus();
@@ -182,20 +184,11 @@ public class UI {
     }
 
     /**
-     * Get valid date.
-     * @return The valid date.
-     */
-    private LocalDate getNewDueDate() {
-        System.out.println("Please enter new due date to update the task");
-        return opt.dateValidator();
-    }
-
-    /**
      * Update task's due date.
      * @param taskToEdit Task to be updated.
      */
     public void editDueDate(Task taskToEdit){
-        LocalDate dueDate = getNewDueDate();
+        LocalDate dueDate = getDate("Please enter new due date to update the task");
         String title = taskToEdit.getTitle();
         Project project = taskToEdit.getProject();
         Status status = taskToEdit.getStatus();
@@ -203,21 +196,11 @@ public class UI {
     }
 
     /**
-     * Get valid project title.
-     * @return The valid project's title.
-     */
-    private Project getNewProject() {
-        System.out.println("Please enter new project to update the task");
-        Project newProject = new Project(opt.stringValidator());
-        return newProject;
-    }
-
-    /**
      * Update task's project.
      * @param taskToEdit Task to be updated.
      */
     public void editProject(Task taskToEdit){
-        Project project = getNewProject();
+        Project project = new Project(getTaskDetail("Please enter new project to update the task"));
         String title = taskToEdit.getTitle();
         LocalDate dueDate = taskToEdit.getDueDate();
         Status status = taskToEdit.getStatus();
@@ -252,10 +235,8 @@ public class UI {
     public void removeTask(Task taskToRemove){
         if(list.remove(taskToRemove)){
             System.out.println("Task removed successfully.");
-            firstCommand();
         } else {
             System.out.println("Something is wrong pleas try again.");
-            firstCommand();
         }
     }
 
@@ -275,21 +256,17 @@ public class UI {
             System.out.println();
             System.out.println("Task is updated successfully.");
             Print.printTask(list.get(list.size()-1));
-            firstCommand();
         } else {
             System.out.println("Something is wrong pleas try again.");
-            firstCommand();
         }
     }
 
     /**
      * Save the task list a file.
      */
-
     public void runSaveCommand(){
         if(fileHandler.save(list)){
             System.out.println("Saved Successfully");
-            firstCommand();
         }
     }
 
@@ -298,7 +275,6 @@ public class UI {
      */
     public void runLoadCommand(){
         this.list = fileHandler.load();
-            firstCommand();
     }
 
     /**

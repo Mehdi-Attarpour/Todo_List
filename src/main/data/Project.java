@@ -22,14 +22,14 @@ public class Project implements Serializable {
 
     /**
      * Checks if the title of two projects are same (consider them as equal)
-     * @param otheProject The project to check if they are equal.
+     * @param otherProject The project to check if they are equal.
      * @return True if both projects have the same title.
      */
     @Override
-    public boolean equals(Object otheProject) {
-        if (!(otheProject instanceof Project))
+    public boolean equals(Object otherProject) {
+        if (!(otherProject instanceof Project))
             return false;
-        Project p = (Project) otheProject;
+        Project p = (Project) otherProject;
         return p.title.equalsIgnoreCase(this.title);
     }
 
