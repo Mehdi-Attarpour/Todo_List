@@ -32,7 +32,7 @@ public class TaskList extends ArrayList<Task> {
          for (Task task : this) {
              if (task.equals(newTask)) {
                  addSucceed = false;
-                 System.out.println("\nYou already have the same task. Please try again\n");
+                 System.out.print("\nYou already have the same task. Please try again\n");
                  return addSucceed;
              }
          }
@@ -125,5 +125,28 @@ public class TaskList extends ArrayList<Task> {
         int numberOfDoneTask = this.taskByStatus(Status.Done).size();
 
         return String.format(">> You have %d Tasks todo and %d Tasks are done.", numberOfToDoTask, numberOfDoneTask);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean equals = true;
+        try {
+            // Check if o is TaskList with the same size of this.
+            if (!(o instanceof TaskList) || ((TaskList) o).size() != this.size()) {
+                return false;
+            } else {
+                // Check if both TaskList contains the same Tasks.
+                TaskList otherTaskList = (TaskList) o;
+                for (Task task: this){
+                    if(!otherTaskList.contains(task)){
+                        equals = false;
+                    }
+                }
+            }
+            return equals;
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 }
