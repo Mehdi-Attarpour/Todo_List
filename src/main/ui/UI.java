@@ -242,9 +242,7 @@ public class UI {
      * Save the task list a file.
      */
     private void runSaveCommand(){
-        if(fileHandler.save(list)){
-            System.out.println("Saved Successfully");
-        }
+        fileHandler.save(list);
     }
 
     /**
