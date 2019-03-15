@@ -26,7 +26,7 @@ public class UI {
     public UI(){
         this.list = new TaskList();
         opt = new Option();
-        fileHandler = new FileHandler();
+        fileHandler = new FileHandler("file");
         validator = new Validator();
     }
 
@@ -70,7 +70,7 @@ public class UI {
             switch (opt.showTaskOptions()) {
                 case 1: System.out.println("\n" + list.summary()); break;
                 case 2: Print.printList(this.list.taskByStatus(Status.Done)); break;
-                case 3:Print.printList(this.list.taskByStatus(Status.Done)); break;
+                case 3: Print.printList(this.list.taskByStatus(Status.Not_Done)); break;
                 case 4: Print.printList(this.list.sortList(new TitleComparator())); break;
                 case 5: Print.printList(this.list.sortList(new DateComparator())); break;
                 case 6: Print.printMap(this.list.groupedByProject()); break;
@@ -242,9 +242,7 @@ public class UI {
      * Save the task list a file.
      */
     private void runSaveCommand(){
-        if(fileHandler.save(list)){
-            System.out.println("Saved Successfully");
-        }
+        fileHandler.save(list);
     }
 
     /**
