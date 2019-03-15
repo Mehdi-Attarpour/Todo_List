@@ -1,20 +1,22 @@
 # Todo_List
 
-**This is Software Development Academy (SDA5) individual project.**
+**This is an individual project of the Software Development Academy.**
 
-- This application is developed to manage tasks.
-- This application use a text based user interface via the command-line.
-- Each Task has Title, Due date, Project (that task belong to) and Status (*Done or Not_Done*)
-- It can handle adding tasks, editing them, showing them in various ways, save and load all data.
-- This project used:
- - new java features like stream and lambdas
- - Unit test is also provided (*JUnit5*)
+- An application has been developed to manage tasks.
+- The application is a text based user interface via the command-line.
+- Each Task has a Title, Due date, Project (that the task belongs to) and a Status (*Done or Not_Done*)
+- The user can add and edit tasks, alongside view a list of tasks in various ways. 
+- The user is also able to save and load all the data within the application.
+- This project incorporated:
+ - New java features such as streams and lambda expressions 
+ - Unit testing (*JUnit5*)
 
 [Diagrams](https://github.com/Mehdi-Attarpour/Todo_List/tree/dev/Diagram)
 
 ### User Manual
-1. As soon as applicarion is run all previous tasks will be loaded. A summary of loaded tasks will be displayed.
-2. User will see the main menu and can choose to add task, see the tasks in various ways, edit them or remove.
+1. As soon as the application is run all previous tasks will be loaded and a summary of the tasks will be displayed.
+2. The user will see the main menu and can choose to add a task, view tasks, and edit or remove them. The main menu 
+window is visible below.
 ```
 >> Welcome to TODO-List APP
 >> You have 2 Tasks todo and 0 Tasks are done.
@@ -27,11 +29,11 @@
 >> (6) Quit
 ```
 
-3. User has ability to save or load date any time.
-4. Each option may lead to another menu. (*There will be a hint printed on console in each step regarding how to choose options or what is a valid input.*)
+3. The user is also able to save or load data at any time.
+4. Each option may lead to another menu. (*There will be a hint printed on the console in each step regarding how to choose options or what is a valid input.*) The show tasks window is shown below. 
 
 ```
->>> How do you want to see the Tasks:
+>>> How do you want to see the Tasks: 
 	>>> (1) Show summary
 	>>> (2) Show Done Tasks
 	>>> (3) Show ToDo (Not_Done) Tasks
@@ -43,24 +45,24 @@
 	>>> (9) Back
 hint: Please choose a number in range 1 to 9
 ```
-### Rules
+### Application Rules
 
-1. User can not add duplicate tasks (*At least one field must be different*)
+1. The user can not add duplicate tasks. An error message is shown below.
 ```
 You already have the same task. Please try again.
 ```
-2. When user add a new task the status is set on Not_Done. (*User can edit it though*)
+2. The status of a task is automatically set to Not_Done. A hint message is shown below.
 ```
 Note
 The Task status is set as 'Not_Done'.
 If you want to change it please choose edit option.
 ```
-3. User can not add a task with past due date.
+3. The user can not add a task with a past due date. An error message is shown below.
 ```
 Check your calendar, you entered a past date, Sorry dude you may missed the deadline.
 Enter a future date PLEASE!!!
 ```
-4. Each user input from console must be valid regarding the input type. (*There will be hint printed on console showing valid input format*) for example:
+4. Each user input from console must be valid regarding the input type. (*There will be a hint printed on the console showing a valid input format*) for example:
 ```
 Please Enter date in this format! yyyy-MM-dd
 ```
