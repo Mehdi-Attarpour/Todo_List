@@ -24,9 +24,12 @@
 >> (3) Edit Task (update, mark as done, remove)
 >> (4) Load Tasks
 >> (5) Save
->> (6) Quit```
+>> (6) Quit
+```
+
 3. User has ability to save or load date any time.
 4. Each option may lead to another menu. (*There will be a hint printed on console in each step regarding how to choose options or what is a valid input.*)
+
 ```
 >>> How do you want to see the Tasks:
 	>>> (1) Show summary
@@ -40,8 +43,8 @@
 	>>> (9) Back
 hint: Please choose a number in range 1 to 9
 ```
-
 ### Rules
+
 1. User can not add duplicate tasks (*At least one field must be different*)
 ```
 You already have the same task. Please try again.
