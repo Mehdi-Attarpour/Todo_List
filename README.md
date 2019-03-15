@@ -10,7 +10,7 @@
  - new java features like stream and lambdas
  - Unit test is also provided (*JUnit5*)
 
-[Diagram](www.google.com)
+[Diagrams](https://github.com/Mehdi-Attarpour/Todo_List/tree/dev/Diagram)
 
 ### User Manual
 1. As soon as applicarion is run all previous tasks will be loaded. A summary of loaded tasks will be displayed.
